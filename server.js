@@ -36,7 +36,7 @@ const transporter = nodemailer.createTransport({
 
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
+  res.header('Access-Control-Allow-Origin', "https://timelesslashes.co.ke");
   next();
 });
 
@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 // Middleware
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL, "http://localhost:5173"], // Allowed origins
+    origin: ["https://timelesslashes.co.ke", "http://localhost:5173"], // Allowed origins
     credentials: true, // Allow credentials like cookies
   })
 );
