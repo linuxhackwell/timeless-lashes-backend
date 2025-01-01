@@ -21,7 +21,7 @@ const logger = require("./utils/logger");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const FRONTEND_URL = process.env.FRONTEND_URL;
+
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
@@ -44,8 +44,8 @@ app.use((req, res, next) => {
 // Middleware
 app.use(
   cors({
-    origin: [FRONTEND_URL, "https://0d90-41-90-68-194.ngrok-free.app"], // Specify allowed origins
-    credentials: true, // Allow cookies to be sent
+    origin: [process.env.FRONTEND_URL, "http://localhost:5173"], // Allowed origins
+    credentials: true, // Allow credentials like cookies
   })
 );
 
