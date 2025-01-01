@@ -36,7 +36,7 @@ const transporter = nodemailer.createTransport({
 
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', FRONTEND_URL);
+  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
   next();
 });
 
