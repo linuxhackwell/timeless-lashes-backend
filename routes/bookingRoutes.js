@@ -5,7 +5,19 @@ const ClassBooking = require("../models/ClassBooking");
 const { body, validationResult } = require('express-validator');
 const nodemailer = require("nodemailer");
 const mongoose = require('mongoose');
+const moment = require('moment-timezone');
 
+
+// Configure Nodemailer Transporter
+const transporter = nodemailer.createTransport({
+  service: 'Gmail', // Change to your email service provider if needed
+  auth: {
+    user: process.env.EMAIL_USER, // Your email address
+    pass: process.env.EMAIL_PASS, // Your email password or app-specific password
+  },
+  debug: true,
+  logger: true,
+});
 
 
 // Create a new booking
@@ -26,17 +38,27 @@ router.post(
       return res.status(400).json({ message: 'Validation failed', errors: errors.array() });
     }
 
-    const { service, employee, date, timeSlot, customerName, customerEmail, customerPhone, numberOfPeople, message } = req.body;
+    const {
+      service,
+      employee,
+      date,
+      timeSlot,
+      customerName,
+      customerEmail,
+      customerPhone,
+      numberOfPeople,
+      message,
+    } = req.body;
 
     try {
-      // Normalize the date to remove time (YYYY-MM-DD)
-      const normalizedDate = new Date(date).toISOString().split("T")[0];
+      // Adjust the date to the local timezone
+      const normalizedDate = moment.tz(date, "YYYY-MM-DD", "Africa/Nairobi").format("YYYY-MM-DD");
 
       // Create a new booking
       const newBooking = new Booking({
         service,
         employee,
-        date: normalizedDate, // Save date as YYYY-MM-DD
+        date: normalizedDate,
         timeSlot,
         customerName,
         customerEmail,
@@ -45,15 +67,44 @@ router.post(
         message,
       });
 
-      // Save the booking
-      await newBooking.save();
-      res.status(201).json({ message: "Booking created successfully", booking: newBooking });
+      const savedBooking = await newBooking.save();
+
+      // Email Details
+      const emailSubject = `Booking Confirmation for ${service.name}`;
+      const emailBody = `
+        <p>Dear ${customerName},</p>
+        <p>Thank you for booking the <strong>${service.name}</strong> service with us.</p>
+        <p>Here are your booking details:</p>
+        <ul>
+          <li><strong>Service:</strong> ${service.name}</li>
+          <li><strong>Employee:</strong> ${employee}</li>
+          <li><strong>Date:</strong> ${normalizedDate}</li>
+          <li><strong>Time Slot:</strong> ${timeSlot}</li>
+          <li><strong>Number of People:</strong> ${numberOfPeople}</li>
+          <li><strong>Message:</strong> ${message || "No message provided"}</li>
+        </ul>
+        <p>If you have any questions, feel free to contact us!</p>
+      `;
+
+      // Send confirmation email
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: customerEmail,
+        subject: emailSubject,
+        html: emailBody,
+      });
+
+      res.status(201).json({
+        message: "Booking created successfully. A confirmation email has been sent to the customer.",
+        booking: savedBooking,
+      });
     } catch (error) {
-      console.error("Error during booking creation:", error);
-      res.status(500).json({ message: "Failed to create booking", error: error.message });
+      console.error("Error during booking creation or email sending:", error);
+      res.status(500).json({ message: "Failed to create booking or send confirmation email", error: error.message });
     }
   }
 );
+
 
 
 // Get all bookings
@@ -104,16 +155,6 @@ router.post("/check-availability", async (req, res) => {
 });
 
 
-// Configure Nodemailer Transporter
-const transporter = nodemailer.createTransport({
-  service: 'Gmail', // Change to your email service provider if needed
-  auth: {
-    user: process.env.EMAIL_USER, // Your email address
-    pass: process.env.EMAIL_PASS, // Your email password or app-specific password
-  },
-  debug: true,
-  logger: true,
-});
 
 // Booking Route with Email Integration
 router.post('/class-bookings', async (req, res) => {

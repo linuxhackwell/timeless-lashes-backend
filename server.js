@@ -45,7 +45,7 @@ app.use(bodyParser.json());
 
 // Static Files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use(express.static(path.join(__dirname, "dist"))); // Serve React static files
+//app.use(express.static(path.join(__dirname, "dist"))); // Serve React static files
 
 // Test email function
 const testEmail = async () => {
