@@ -51,7 +51,10 @@ router.post(
     }
 
     const { name, description, price } = req.body;
-    const imagePath = req.file ? req.file.path.replace(/\\/g, '/') : null;
+    //const imagePath = req.file ? req.file.path.replace(/\\/g, '/') : null;
+
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+
 
     try {
       const newService = new Service({
