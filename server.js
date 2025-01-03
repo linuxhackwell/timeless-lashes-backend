@@ -44,7 +44,7 @@ app.use(bodyParser.json());
 
 // Static Files
 app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve uploaded images
-app.use(express.static(path.join(__dirname, "dist"))); // Serve React static files
+//app.use(express.static(path.join(__dirname, "dist"))); // Serve React static files
 
 // Test email function
 const testEmail = async () => {
@@ -89,10 +89,12 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/classes", classRoutes);
 app.use("/api/courses", courseRoutes);
 
+/*
 // Catch-all route for React
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "dist", "index.html"));
 });
+*/
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
