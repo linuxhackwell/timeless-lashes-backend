@@ -8,6 +8,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const Service = require("./models/Service");
 const nodemailer = require("nodemailer");
+
 const bookingRoutes = require("./routes/bookingRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
@@ -43,7 +44,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 // Static Files
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve uploaded images
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 //app.use(express.static(path.join(__dirname, "dist"))); // Serve React static files
 
 // Test email function
@@ -94,8 +95,8 @@ app.use("/api/courses", courseRoutes);
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "dist", "index.html"));
 });
-*/
 
+*/
 // Error Handling Middleware
 app.use((err, req, res, next) => {
   logger.error(err.message);
