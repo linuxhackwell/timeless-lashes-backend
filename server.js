@@ -8,7 +8,6 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const Service = require("./models/Service");
 const nodemailer = require("nodemailer");
-
 const bookingRoutes = require("./routes/bookingRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
@@ -44,8 +43,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 // Static Files
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-//app.use(express.static(path.join(__dirname, "dist"))); // Serve React static files
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve uploaded images
+app.use(express.static(path.join(__dirname, "dist"))); // Serve React static files
 
 // Test email function
 const testEmail = async () => {
