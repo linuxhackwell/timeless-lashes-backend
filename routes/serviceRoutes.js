@@ -1,17 +1,25 @@
 const express = require('express');
 const multer = require('multer');
 const { body, validationResult } = require('express-validator');
+const fs = require('fs');
+const path = require('path');
 const Service = require('../models/Service');
 const router = express.Router();
 
+// Ensure the uploads folder exists
+const uploadsPath = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath);
+}
+
 // Multer configuration for image uploads
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Directory for storing images
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); // Unique filename
-  },
+    destination: (req, file, cb) => {
+        cb(null, uploadsPath);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    },
 });
 const upload = multer({ storage });
 
@@ -55,6 +63,7 @@ router.post(
       await newService.save();
       res.status(201).json({ message: 'Service added successfully', newService });
     } catch (error) {
+      console.error('Error in POST /api/services:', error.message);
       res.status(500).json({ error: 'Failed to add service' });
     }
   }
