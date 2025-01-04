@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 router.post('/', upload.single('profilePicture'), async (req, res) => {
   try {
     const { name, email, phone, assignedServices } = req.body;
-    const profilePicture = req.file ? req.file.filename : null;
+    const profilePicture = req.file ? `/uploads/${req.file.filename}` : null;
 
     const newEmployee = new Employee({
       name,
@@ -43,8 +43,10 @@ router.put('/:id', upload.single('profilePicture'), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, phone, assignedServices } = req.body;
-    const profilePicture = req.file ? req.file.filename : null;
-
+    employeeToUpdate.profilePicture = profilePicture 
+    ? `/uploads/${profilePicture}` 
+    : employeeToUpdate.profilePicture;
+  
     const employeeToUpdate = await Employee.findById(id);
 
     if (!employeeToUpdate) {
