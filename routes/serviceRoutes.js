@@ -7,8 +7,8 @@ const path = require('path');
 const Service = require('../models/Service');
 const router = express.Router();
 
-const uploadsPath = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsPath)) {
+const uploadsPath = path.resolve('uploads');
+  if (!fs.existsSync(uploadsPath)) {
     fs.mkdirSync(uploadsPath);
 }
 
