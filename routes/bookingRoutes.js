@@ -77,13 +77,16 @@ router.post(
         <p>Here are your booking details:</p>
         <ul>
           <li><strong>Service:</strong> ${service.name}</li>
-          <li><strong>Employee:</strong> ${employee}</li>
           <li><strong>Date:</strong> ${normalizedDate}</li>
           <li><strong>Time Slot:</strong> ${timeSlot}</li>
           <li><strong>Number of People:</strong> ${numberOfPeople}</li>
           <li><strong>Message:</strong> ${message || "No message provided"}</li>
         </ul>
         <p>If you have any questions, feel free to contact us!</p>
+
+        <p><strong>Please send a screenshot with the payment message from safaricom.<strong></p>
+        <p><strong>Please note that your booking will be deleted if the sreenshot is not sent within 12 hours<strong></p>
+
       `;
 
       // Send confirmation email
@@ -182,10 +185,13 @@ router.post('/class-bookings', async (req, res) => {
       <p>Here are your booking details:</p>
       <ul>
         <li><strong>Course:</strong> ${course.name}</li>
-        <li><strong>Price:</strong> $${course.price}</li>
+        <li><strong>Price:</strong> Ksh${course.price}</li>
         <li><strong>Message:</strong> ${message || "No message provided"}</li>
       </ul>
       <p>If you have any questions, feel free to contact us!</p>
+
+              <p><strong>Please send a screenshot with the payment message from safaricom.<strong></p>
+        <p><strong>Please note that your booking will be deleted if the sreenshot is not sent within 12 hours<strong></p>
     `;
 
     // Send Confirmation Email
