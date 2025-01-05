@@ -133,19 +133,20 @@ router.post("/check-availability", async (req, res) => {
   }
 
   try {
-    // Normalize the provided date to a simple string (YYYY-MM-DD)
-    const normalizedDate = moment.tz(date, "Africa/Nairobi").format("YYYY-MM-DD");
+    // Convert the input date to start and end of the day in Africa/Nairobi timezone
+    const startOfDay = moment.tz(date, "Africa/Nairobi").startOf('day').utc().toDate();
+    const endOfDay = moment.tz(date, "Africa/Nairobi").endOf('day').utc().toDate();
 
-    // Query database using regex to match normalized date (for stored ISO strings)
+    // Query bookings within the UTC range corresponding to the selected date
     const bookings = await Booking.find({
-      date: { $regex: `^${normalizedDate}` },
+      date: { $gte: startOfDay, $lte: endOfDay },
     });
 
     // Extract booked slots
     const bookedSlots = bookings.map((booking) => booking.timeSlot);
 
     // Log output for debugging
-    console.log("Date:", date, "Normalized Date:", normalizedDate, "Booked Slots:", bookedSlots);
+    //console.log("Date:", date, "Start of Day (UTC):", startOfDay, "End of Day (UTC):", endOfDay, "Booked Slots:", bookedSlots);
 
     // Return booked slots as response
     res.status(200).json({ bookedSlots });
@@ -156,6 +157,7 @@ router.post("/check-availability", async (req, res) => {
     });
   }
 });
+
 
 
 
