@@ -52,7 +52,7 @@ router.post(
 
     try {
       // Adjust the date to the local timezone
-      const normalizedDate = moment.tz(date, "YYYY-MM-DD", "Africa/Nairobi").format("YYYY-MM-DD");
+      const normalizedDate = moment.tz(date, "Africa/Nairobi").startOf('day').utc().format();
 
       // Create a new booking
       const newBooking = new Booking({
@@ -131,7 +131,7 @@ router.post("/check-availability", async (req, res) => {
 
   try {
     // Normalize the provided date to a simple string (YYYY-MM-DD)
-    const normalizedDate = new Date(date).toISOString().split("T")[0];
+    const normalizedDate = moment.tz(date, "Africa/Nairobi").format("YYYY-MM-DD");
 
     // Query database using regex to match normalized date (for stored ISO strings)
     const bookings = await Booking.find({
